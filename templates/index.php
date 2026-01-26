@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OralCare | Home</title>
-    <link rel="icon" href="{{ url_for('static', filename='images/oralcare.png') }}" type="image/png">
+    <link rel="icon" href="{{ url_for('static', filename='images/DeltaNu_Logo.png') }}" type="image/png">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 </head>
 
@@ -12,7 +12,7 @@
     <div class="container">
         <div class="left">
             <div class="logo-title">
-                <img src="{{ url_for('static', filename='images/oralcare.png') }}" alt="oralcare" class="icon">
+                <img src="{{ url_for('static', filename='images/DeltaNu_Logo.png') }}" alt="oralcare" class="icon">
                 <h1>OralCare</h1>
             </div>
 
