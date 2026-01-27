@@ -23,6 +23,14 @@ app.config['MAIL_DEBUG'] = True
 def home():
     return render_template('index.php')
 
+@app.route('/symptom')
+def symptom():
+    return render_template('symptom.php')
+
+@app.route('/riskfactor')
+def riskfactor():
+    return render_template('riskfactor.php')
+
 @app.route('/result')
 def result():
     return render_template('result.php')
@@ -42,8 +50,7 @@ OralCare Team
 Disclaimer: This is an automated email. Please do not reply to this message.
 """
     try:
-        sender_email = ("OralCare Team", "sofiabtrsyia@gmail.com")
-        msg = Message(subject, recipients=[recipient_email], body=body, sender=sender_email)
+        msg = Message(subject, recipients=[recipient_email], body=body)
         mail.send(msg)
         return redirect(url_for('result', email_sent='success'))
     except Exception as e:
