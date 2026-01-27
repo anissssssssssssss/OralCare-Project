@@ -17,17 +17,17 @@
         <div class="results">
             <div class="result-item">
                 <strong>Risk Factor Assessment:</strong>
-                <p>{{ risks_level }} (Certainty: {{ certainty_score }})</p>
+                <p>{{ risks_level }} (Certainty Level: {{ certainty_score }})</p>
             </div>
             <div class="result-item">
                 <strong>Symptom Assessment:</strong>
-                <p>{{ symptom_level }} (Certainty: {{ symptom_certainty_score }})</p>
+                <p>{{ symptom_level }} (Certainty Level: {{ symptom_certainty_score }})</p>
             </div>
         </div>
-        <p class="disclaimer">Note: The results of this self-assessment may not be accurate. Please consult a healthcare professional for a proper diagnosis.</p>
+        <p class="disclaimer">Disclaimer: This assessment is provided for informational purposes only and is not intended to replace professional medical advice, diagnosis, or treatment. Please consult a qualified healthcare professional for an accurate evaluation.</p>
 
         <form action="/send-email" method="POST" id="emailForm">
-            <label for="email">Enter your email address to receive a copy of the results:</label>
+            <label for="email">Enter your email address to receive a copy of this assessment:</label>
             <input type="email" id="email" name="email" placeholder="your-email@example.com" required>
             <button id="send" type="submit">Send My Results</button>
         </form>
