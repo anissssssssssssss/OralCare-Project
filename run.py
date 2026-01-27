@@ -88,23 +88,42 @@ def result():
 def send_email():
     recipient_email = request.form.get('email')
 
+    # Get the assessment results from session
+    risks_level = session.get('risks_level', 'Not Available')
+    certainty_score = session.get('certainty_score', 'Not Available')
+    symptom_level = session.get('symptom_level', 'Not Available')
+    symptom_certainty_score = session.get('symptom_certainty_score', 'Not Available')
+
     subject = "Dental Health Assessment Result"
     body = f"""Hello,
+
 Your dental health assessment result is as follows:
 
-Please consult with a dental professional for further guidance.
+Risk Factor Assessment: {risks_level} (Certainty Level: {certainty_score})
+Symptom Assessment: {symptom_level} (Certainty Level: {symptom_certainty_score})
+
+Please consult with a dental professional for further guidance and accurate evaluation.
+
 Best regards,
 OralCare Team
 
-Disclaimer: This is an automated email. Please do not reply to this message.
+Disclaimer: This is an automated email. Please do not reply to this message. This assessment is provided for informational purposes only and is not intended to replace professional medical advice, diagnosis, or treatment.
 """
     try:
-        sender_email = ("OralCare Team", "sofiabtrsyia@gmail.com")
-        msg = Message(subject, recipients=[recipient_email], body=body, sender=sender_email)
+        print(f"Attempting to send email to: {recipient_email}")
+        print(f"Mail server: {app.config.get('MAIL_SERVER')}")
+        print(f"Mail port: {app.config.get('MAIL_PORT')}")
+        print(f"Mail username: {app.config.get('MAIL_USERNAME')}")
+        print(f"Mail use TLS: {app.config.get('MAIL_USE_TLS')}")
+        
+        msg = Message(subject, recipients=[recipient_email], body=body)
         mail.send(msg)
+        print("Email sent successfully!")
         return redirect(url_for('result', email_sent='success'))
     except Exception as e:
-        print(f"Error sending email: {e}")
+        print(f"Error sending email: {type(e).__name__}: {e}")
+        import traceback
+        traceback.print_exc()
         return redirect(url_for('result', email_sent='failure'))
     
 if __name__ == '__main__':
