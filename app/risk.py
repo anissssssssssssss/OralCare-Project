@@ -15,7 +15,7 @@ def calculate_risks(answers):
         (slot hpv_exposure)
         (slot immune_compromise)
         (slot family_history)
-        (slot aage_over_45)
+        (slot age_over_45)
         (slot gender_male)
     )
     """)
@@ -31,7 +31,7 @@ def calculate_risks(answers):
         (slot cf_hpv_exposure (default 0.7))
         (slot cf_immune_compromise (default 0.75))
         (slot cf_family_history (default 0.6))
-        (slot cf_aage_over_45 (default 0.5))
+        (slot cf_age_over_45 (default 0.5))
         (slot cf_gender_male (default 0.45))
     )
     """)
@@ -83,33 +83,7 @@ def calculate_risks(answers):
     )
     """)
 
-    # Rule 4: betel quid consumption
-    env.build("""
-    (defrule check-betel-quid
-        (oral-cancer-risks (betel_quid ?answer))
-        ?cf <- (risks-cf-values (cf_betel_quid ?cf_betel_quid))
-        (not (fired-risks-rules (oral-cancer-risks "betel_quid")))
-        =>
-        (bind ?cf-value (* (float ?answer) ?cf_betel_quid))
-        (modify ?cf (cf_betel_quid ?cf-value))
-        (assert (fired-risks-rules (oral-cancer-risks "betel_quid")))
-    )
-    """)
-
-    # Rule 5: Poor oral hygiene
-    env.build("""
-    (defrule check-poor-oral-hygiene
-        (oral-cancer-risks (poor_oral_hygiene ?answer))
-        ?cf <- (risks-cf-values (cf_poor_oral_hygiene ?cf_poor_oral_hygiene))
-        (not (fired-risks-rules (oral-cancer-risks "poor_oral_hygiene")))
-        =>
-        (bind ?cf-value (* (float ?answer) ?cf_poor_oral_hygiene))
-        (modify ?cf (cf_poor_oral_hygiene ?cf-value))
-        (assert (fired-risks-rules (oral-cancer-risks "poor_oral_hygiene")))
-    )
-    """)
-
-    # Rule 6: HPV exposure
+    # Rule 4: HPV exposure
     env.build("""
     (defrule check-hpv-exposure
         (oral-cancer-risks (hpv_exposure ?answer))
@@ -122,20 +96,7 @@ def calculate_risks(answers):
     )
     """)
 
-    # Rule 7: Immune compromise
-    env.build("""
-    (defrule check-immune-compromise
-        (oral-cancer-risks (immune_compromise ?answer))
-        ?cf <- (risks-cf-values (cf_immune_compromise ?cf_immune_compromise))
-        (not (fired-risks-rules (oral-cancer-risks "immune_compromise")))
-        =>
-        (bind ?cf-value (* (float ?answer) ?cf_immune_compromise))
-        (modify ?cf (cf_immune_compromise ?cf-value))
-        (assert (fired-risks-rules (oral-cancer-risks "immune_compromise")))
-    )
-    """)
-
-    # Rule 8: family history
+    # Rule 5: family history
     env.build("""
     (defrule check-family-history
         (oral-cancer-risks (family_history ?answer))
@@ -145,6 +106,45 @@ def calculate_risks(answers):
         (bind ?cf-value (* (float ?answer) ?cf_family_history))
         (modify ?cf (cf_family_history ?cf-value))
         (assert (fired-risks-rules (oral-cancer-risks "family_history")))
+    )
+    """)
+
+    # Rule 6: betel quid consumption
+    env.build("""
+    (defrule check-betel-quid
+        (oral-cancer-risks (betel_quid ?answer))
+        ?cf <- (risks-cf-values (cf_betel_quid ?cf_betel_quid))
+        (not (fired-risks-rules (oral-cancer-risks "betel_quid")))
+        =>
+        (bind ?cf-value (* (float ?answer) ?cf_betel_quid))
+        (modify ?cf (cf_betel_quid ?cf-value))
+        (assert (fired-risks-rules (oral-cancer-risks "betel_quid")))
+    )
+    """)
+
+        # Rule 7: Poor oral hygiene
+    env.build("""
+    (defrule check-poor-oral-hygiene
+        (oral-cancer-risks (poor_oral_hygiene ?answer))
+        ?cf <- (risks-cf-values (cf_poor_oral_hygiene ?cf_poor_oral_hygiene))
+        (not (fired-risks-rules (oral-cancer-risks "poor_oral_hygiene")))
+        =>
+        (bind ?cf-value (* (float ?answer) ?cf_poor_oral_hygiene))
+        (modify ?cf (cf_poor_oral_hygiene ?cf-value))
+        (assert (fired-risks-rules (oral-cancer-risks "poor_oral_hygiene")))
+    )
+    """)
+
+    # Rule 8: Immune compromise
+    env.build("""
+    (defrule check-immune-compromise
+        (oral-cancer-risks (immune_compromise ?answer))
+        ?cf <- (risks-cf-values (cf_immune_compromise ?cf_immune_compromise))
+        (not (fired-risks-rules (oral-cancer-risks "immune_compromise")))
+        =>
+        (bind ?cf-value (* (float ?answer) ?cf_immune_compromise))
+        (modify ?cf (cf_immune_compromise ?cf-value))
+        (assert (fired-risks-rules (oral-cancer-risks "immune_compromise")))
     )
     """)
 
@@ -177,7 +177,7 @@ def calculate_risks(answers):
     # Combine all CF values using the certainty factor combination formula
     env.build("""
     (defrule calculate-cancer-risk
-        (symptom-cf-values 
+        (risks-cf-values 
             (cf_tobacco ?cf1) 
             (cf_alcohol ?cf2) 
             (cf_excessive_sun_exposure ?cf3) 
@@ -231,7 +231,7 @@ def calculate_risks(answers):
     """)
 
 # Assert the user's answers
-    env.assert_string(f'(oral-symptoms '
+    env.assert_string(f'(oral-cancer-risks '
                       f'(tobacco {float(answers.get("tobacco", 0))}) '
                       f'(alcohol {float(answers.get("alcohol", 0))}) '
                       f'(excessive_sun_exposure {float(answers.get("excessive_sun_exposure", 0))}) '
@@ -247,9 +247,9 @@ def calculate_risks(answers):
 
     # Extract and return the results
     for fact in env.facts():
-        if fact.template.name == 'cancer-risk-level':
-            risk_level = fact['level']
-            certainty_score = f"{(fact['cf-combine'] * 100):.2f}%"
-            return risk_level, certainty_score
-    
+        if fact.template.name == 'cancer-risk-factor-level':
+            cancer_riskfactor_level = fact['level']
+            risk_certainty_score = f"{(fact['cf-combine'] * 100):.2f}%"
+            return cancer_riskfactor_level, risk_certainty_score
+
     return "No assessment possible", "0%"
