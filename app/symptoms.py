@@ -40,7 +40,9 @@ def calculate_symptoms(answers):
     env.build("""(deftemplate fired-symptom-rules (slot symptom))""")
 
     # Define the cancer risk level template
-    env.build("""(deftemplate cancer-risk-level (slot level) (slot cf-combine))""")
+    env.build("""(deftemplate cancer-symptoms (slot level) (slot cf-combine))""")
+
+    env.build("""(deftemplate symptoms-done)""")
 
     env.assert_string("(symptom-cf-values)")
 
@@ -174,9 +176,18 @@ def calculate_symptoms(answers):
     )
     """)
 
+    env.build("""
+    (defrule mark-symptoms-done
+        (fired-symptom-rules (symptom "difficulty_speaking"))
+        =>
+        (assert (symptoms-done))
+    )
+    """)
+
     # Combine all CF values using the certainty factor combination formula
     env.build("""
-    (defrule calculate-cancer-risk
+    (defrule calculate-cancer-symptoms
+        (symptoms-done)
         (symptom-cf-values 
             (cf_ulcers ?cf1) 
             (cf_bleeding ?cf2) 
@@ -199,20 +210,20 @@ def calculate_symptoms(answers):
         (bind ?cf-combine-7 (+ ?cf-combine-6 (* ?cf8 (- 1 ?cf-combine-6))))
         (bind ?cf-combine-8 (+ ?cf-combine-7 (* ?cf9 (- 1 ?cf-combine-7))))
         (bind ?cf-combine-9 (+ ?cf-combine-8 (* ?cf10 (- 1 ?cf-combine-8))))
-        
         (if (<= ?cf-combine-9 0.1) then
-            (assert (cancer-risk-level (cf-combine ?cf-combine-9) (level "Very Low Risk")))
+            (assert (cancer-symptoms (cf-combine ?cf-combine-9) (level "Very Low Risk")))
         else
             (if (<= ?cf-combine-9 0.3) then
-                (assert (cancer-risk-level (cf-combine ?cf-combine-9) (level "Low Risk")))
+                (assert (cancer-symptoms (cf-combine ?cf-combine-9) (level "Low Risk")))
             else
                 (if (<= ?cf-combine-9 0.5) then
-                    (assert (cancer-risk-level (cf-combine ?cf-combine-9) (level "Moderate Risk")))
+                    (assert (cancer-symptoms (cf-combine ?cf-combine-9) (level "Moderate Risk")))
                 else
                     (if (<= ?cf-combine-9 0.7) then
-                        (assert (cancer-risk-level (cf-combine ?cf-combine-9) (level "High Risk")))
+                        (assert (cancer-symptoms (cf-combine ?cf-combine-9) (level "High Risk")))
                     else
-                        (assert (cancer-risk-level (cf-combine ?cf-combine-9) (level "Very High Risk - Immediate Consultation Recommended")))
+                        (assert (cancer-symptoms (cf-combine ?cf-combine-9)
+                            (level "Very High Risk - Immediate Consultation Recommended")))
                     )
                 )
             )
@@ -223,9 +234,8 @@ def calculate_symptoms(answers):
     # Return the result
     env.build("""
     (defrule result
-        (cancer-risk-level (level ?level) (cf-combine ?cf-combine))
+        (cancer-symptoms (level ?level) (cf-combine ?cf-combine))
         =>
-        (bind ?percentage (* ?cf-combine 100))
         (halt)
     )
     """)
@@ -242,12 +252,11 @@ def calculate_symptoms(answers):
                       f'(loose_teeth {float(answers.get("loose_teeth", 0))}) '
                       f'(numbness {float(answers.get("numbness", 0))}) '
                       f'(difficulty_speaking {float(answers.get("difficulty_speaking", 0))}))')
-
     env.run()
 
     # Extract and return the results
     for fact in env.facts():
-        if fact.template.name == 'cancer-risk-level':
+        if fact.template.name == 'cancer-symptoms':
             risk_level = fact['level']
             certainty_score = f"{(fact['cf-combine'] * 100):.2f}%"
             return risk_level, certainty_score

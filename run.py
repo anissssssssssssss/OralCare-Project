@@ -49,16 +49,21 @@ def symptom():
         answers = {
             'ulcers': request.form.get('ulcers'),
             'bleeding': request.form.get('bleeding'),
-            'swelling': request.form.get('swelling'),
-            'nodes': request.form.get('nodes'),
+            'swelling_lump': request.form.get('swelling_lump'),
+            'lymph_nodes': request.form.get('lymph_nodes'),
             'patches': request.form.get('patches'),
-            'swallow': request.form.get('swallow'),
-            'pain': request.form.get('pain'),
-            'teeth': request.form.get('teeth'),
-            'numb': request.form.get('numb'),
-            'speak': request.form.get('speak')
+            'difficulty_swallowing': request.form.get('difficulty_swallowing'),
+            'persistent_pain': request.form.get('persistent_pain'),
+            'loose_teeth': request.form.get('loose_teeth'),
+            'numbness': request.form.get('numbness'),
+            'difficulty_speaking': request.form.get('difficulty_speaking')
         }
-        session['answers'].update(answers)
+
+        session['answers'] = {
+            **session.get('answers', {}),
+            **answers
+        }
+
         return redirect(url_for('result'))
     return render_template('symptom.php')
 
@@ -69,9 +74,15 @@ def result():
         return redirect(url_for('riskfactor'))
     
     cancer_riskfactor_level, risk_certainty_score = risk.calculate_risks(answers)
+    symptom_level, symptom_certainty_score = symptoms.calculate_symptoms(answers)
+    
     session['risks_level'] = cancer_riskfactor_level
     session['certainty_score'] = risk_certainty_score
-    return render_template('result.php', risks_level=cancer_riskfactor_level, certainty_score=risk_certainty_score)
+    session['symptom_level'] = symptom_level
+    session['symptom_certainty_score'] = symptom_certainty_score
+
+    return render_template('result.php', risks_level=cancer_riskfactor_level, certainty_score=risk_certainty_score, 
+                           symptom_level=symptom_level, symptom_certainty_score=symptom_certainty_score)
 
 @app.route('/send_email', methods=['POST'])
 def send_email():

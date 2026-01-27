@@ -1,2 +1,4 @@
 .env
 oral_cancer_prediction_dataset.csv
+__pycache__/
+*.pyc

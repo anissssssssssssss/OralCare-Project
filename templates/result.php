@@ -14,18 +14,16 @@
     <div class="container">
         <h1>Assessment Results</h1>
         <p>Your results are displayed here.</p>
-
         <div class="results">
             <div class="result-item">
-                <strong>Risk Factor(s):</strong>
-                <p>{{ risks_level }}</p>
+                <strong>Risk Factor Assessment:</strong>
+                <p>{{ risks_level }} (Certainty: {{ certainty_score }})</p>
             </div>
             <div class="result-item">
-                <strong>Symptom(s):</strong>
-                <p>{{ result_value_2 }}</p>
+                <strong>Symptom Assessment:</strong>
+                <p>{{ symptom_level }} (Certainty: {{ symptom_certainty_score }})</p>
             </div>
         </div>
-
         <p class="disclaimer">Note: The results of this self-assessment may not be accurate. Please consult a healthcare professional for a proper diagnosis.</p>
 
         <form action="/send-email" method="POST" id="emailForm">

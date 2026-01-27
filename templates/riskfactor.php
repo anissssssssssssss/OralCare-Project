@@ -14,9 +14,7 @@
             <h1>Risk Factors Assessment</h1>
 
             <p class="assessment-desc">
-                Please answer the following questions honestly. Your responses will be used to
-                evaluate lifestyle and background factors that may increase the risk of
-                developing oral cancer.
+                Please answer the following questions honestly. This section evaluates the lifestyle and background factors that may increase the risk of developing oral cancer.
                 <br>
                 <strong>Your answers will remain confidential and are only used for assessment purposes.</strong>
             </p>
@@ -243,7 +241,7 @@
         function updateProgressBar() {
             const radioButtons = document.querySelectorAll('input[type="radio"]');
             const checkedCount = document.querySelectorAll('input[type="radio"]:checked').length;
-            const progressPercentage = (checkedCount / 6) * 34 + 0; // 6 questions, 0-34% for Step 1
+            const progressPercentage = (checkedCount / 10) * 34 + 0; 
             
             const progressFill = document.querySelector('.progress-fill');
             progressFill.style.width = Math.min(progressPercentage, 34) + '%';

@@ -175,6 +175,7 @@ def calculate_risks(answers):
     """)
 
     # Combine all CF values using the certainty factor combination formula
+    # Combine all CF values using the certainty factor combination formula
     env.build("""
     (defrule calculate-cancer-risk
         (risks-cf-values 
@@ -247,7 +248,7 @@ def calculate_risks(answers):
 
     # Extract and return the results
     for fact in env.facts():
-        if fact.template.name == 'cancer-risk-factor-level':
+        if fact.template.name == 'cancer-risk-level':
             cancer_riskfactor_level = fact['level']
             risk_certainty_score = f"{(fact['cf-combine'] * 100):.2f}%"
             return cancer_riskfactor_level, risk_certainty_score
