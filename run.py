@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
 import os
+from app import risk, symptoms
 
 load_dotenv()
 app = Flask(__name__)
@@ -27,8 +28,24 @@ def home():
 def symptom():
     return render_template('symptom.php')
 
-@app.route('/riskfactor')
+@app.route('/riskfactor', methods=['GET', 'POST'])
 def riskfactor():
+    if request.method == 'POST':
+        answers = {
+            'tobacco': request.form.get('tobacco', 0),
+            'alcohol': request.form.get('alcohol', 0),
+            'excessive_sun_exposure': request.form.get('excessive_sun_exposure', 0),
+            'betel_quid': request.form.get('betel_quid', 0),
+            'poor_oral_hygiene': request.form.get('poor_oral_hygiene', 0),
+            'hpv_exposure': request.form.get('hpv_exposure', 0),
+            'immune_compromise': request.form.get('immune_compromise', 0),
+            'family_history': request.form.get('family_history', 0),
+            'age_over_45': request.form.get('age_over_45', 0),
+            'gender_male': request.form.get('gender_male', 0)
+        }
+
+        session['risk_level'] = risk_level
+        risk_level = risk.calculate_risks(answers)
     return render_template('riskfactor.php')
 
 @app.route('/result')
