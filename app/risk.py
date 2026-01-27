@@ -1,90 +1,102 @@
 import clips
 
-ANSWERS = {
-    "Never": 0.0,
-    "Occasionally": 0.2,
-    "Regularly": 0.4,
-    "Frequently": 0.6,
-    "Very Frequently": 0.8,
-    "Always": 1.0,
-}
+(deftemplate user-input
+   (slot tobacco)
+   (slot alcohol)
+   (slot excessive_sun_exposure)
+   (slot hpv_exposure)
+   (slot family_history)
+   (slot betel_quid)
+   (slot poor_oral_hygiene)
+   (slot immune_compromise)
+   (slot age_over_45)
+   (slot gender)
+)
 
-def calc_oral_cancer_score(ui_answers):
+(deftemplate cf-value
+   (slot hypothesis)
+   (slot value)
+)
+CF[12, E] = CF_user × CF_expert.
+(defrule rule-name
+   (symptom-input (slot-name ?u))
+=>
+   (bind ?cf (* ?u EXPERT_CF))
+   (assert (cf-value (hypothesis H1) (rule rule-name) (value ?cf)))
+)
+(defrule r1-tobacco
+   (user-input (tobacco ?u&:(> ?u 0)))
+=>
+   (assert (cf-value (hypothesis H1) (value (* ?u 0.90))))
+)
 
-    env = clips.Environment()
-    env.reset()
+(defrule r2-alcohol
+   (user-input (alcohol ?u&:(> ?u 0)))
+=>
+   (assert (cf-value (hypothesis H1) (value (* ?u 0.85))))
+)
 
-    # Build templates
-    env.build("""
-    (deftemplate symptom
-        (slot name)
-        (slot cf))
+(defrule r3-sun-exposure
+   (user-input (excessive_sun_exposure ?u&:(> ?u 0)))
+=>
+   (assert (cf-value (hypothesis H1) (value (* ?u 0.45))))
+)
 
-    (deftemplate hypothesis
-        (slot name)
-        (slot cf))
-    """)
+(defrule r4-betel-quid
+   (user-input (betel_quid ?u&:(> ?u 0)))
+=>
+   (assert (cf-value (hypothesis H1) (value (* ?u 0.70))))
+)
 
-    # Build rules
-    env.build("""
-    (defrule tobacco-risk
-        (symptom (name tobacco_use) (cf ?c))
-        ?h <- (hypothesis (name H1) (cf ?old))
-        =>
-        (bind ?new (+ ?old (* (* ?c 0.90) (- 1 ?old))))
-        (modify ?h (cf ?new)))
-    """)
+(defrule r5-poor-hygiene
+   (user-input (poor_oral_hygiene ?u&:(> ?u 0)))
+=>
+   (assert (cf-value (hypothesis H1) (value (* ?u 0.50))))
+)
 
-    env.build("""
-    (defrule tobacco-alcohol-risk
-        (symptom (name tobacco_use) (cf ?c1))
-        (symptom (name alcohol_use) (cf ?c2))
-        ?h <- (hypothesis (name H1) (cf ?old))
-        =>
-        (bind ?cf-and (min ?c1 ?c2))
-        (bind ?new (+ ?old (* (* ?cf-and 0.85) (- 1 ?old))))
-        (modify ?h (cf ?new)))
-    """)
+(defrule r6-hpv
+   (user-input (hpv_exposure ?u&:(> ?u 0)))
+=>
+   (assert (cf-value (hypothesis H1) (value (* ?u 0.70))))
+)
 
-    env.build("""
-    (defrule non-healing-ulcer
-        (symptom (name non_healing_ulcer) (cf ?c))
-        ?h <- (hypothesis (name H2) (cf ?old))
-        =>
-        (bind ?new (+ ?old (* (* ?c 0.80) (- 1 ?old))))
-        (modify ?h (cf ?new)))
-    """)
+(defrule r7-immune
+   (user-input (immune_compromise ?u&:(> ?u 0)))
+=>
+   (assert (cf-value (hypothesis H1) (value (* ?u 0.75))))
+)
 
-    env.build("""
-    (defrule ulcer-and-bleeding
-        (symptom (name non_healing_ulcer) (cf ?c1))
-        (symptom (name bleeding_mouth) (cf ?c2))
-        ?h <- (hypothesis (name H2) (cf ?old))
-        =>
-        (bind ?cf-and (min ?c1 ?c2))
-        (bind ?new (+ ?old (* (* ?cf-and 0.90) (- 1 ?old))))
-        (modify ?h (cf ?new)))
-    """)
+(defrule r8-family-history
+   (user-input (family_history ?u&:(> ?u 0)))
+=>
+   (assert (cf-value (hypothesis H1) (value (* ?u 0.60))))
+)
 
-    # Initialize hypotheses
-    env.assert_string('(hypothesis (name H1) (cf 0.0))')
-    env.assert_string('(hypothesis (name H2) (cf 0.0))')
+(defrule r9-age
+   (user-input (age_over_45 ?u&:(> ?u 0)))
+=>
+   (assert (cf-value (hypothesis H1) (value (* ?u 0.65))))
+)
 
+(defrule r10-gender
+   (user-input (gender ?u&:(> ?u 0)))
+=>
+   (assert (cf-value (hypothesis H1) (value (* ?u 0.55))))
+)
 
-    # Assert symptoms from UI
-    for symptom, answer in ui_answers.items():
-        cf = ANSWERS[answer]
-        env.assert_string(
-            f'(symptom (name {symptom}) (cf {cf}))'
-        )
+(defrule r11-tobacco-alcohol
+   (user-input (tobacco ?u1&:(> ?u1 0))
+               (alcohol ?u2&:(> ?u2 0)))
+=>
+   (bind ?u (min ?u1 ?u2))
+   (assert (cf-value (hypothesis H1) (value (* ?u 0.90))))
+)
 
-    # Run inference
-    env.run()
-
-    # Collect results
-    results = {}
-    for fact in env.facts():
-        if fact.template.name == "hypothesis":
-            results[fact["name"]] = round(fact["cf"], 2)
-
-    return results
+(defrule combine-cf-h1
+   ?c1 <- (cf-value (hypothesis H1) (value ?v1))
+   ?c2 <- (cf-value (hypothesis H1) (value ?v2&:(> ?v2 ?v1)))
+=>
+   (bind ?newcf (+ ?v1 (* ?v2 (- 1 ?v1))))
+   (retract ?c1 ?c2)
+   (assert (cf-value (hypothesis H1) (value ?newcf)))
+)
