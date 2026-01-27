@@ -215,7 +215,11 @@
                 </div>
             </div>
 
-            <button type="submit">Next</button>
+            <div class="action">
+                <a href="/symptom">
+                    <button type="submit">Next</button>
+                </a>
+            </div>
         </form>
     </div>
 </body>

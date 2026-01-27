@@ -23,13 +23,37 @@ app.config['MAIL_DEBUG'] = True
 def home():
     return render_template('index.php')
 
-@app.route('/symptom')
-def symptom():
-    return render_template('symptom.php')
-
-@app.route('/riskfactor')
+@app.route('/riskfactor', methods=['GET', 'POST'])
 def riskfactor():
+    if request.method == 'POST':
+        session['tobacco'] = request.form.get('tobacco')
+        session['alcohol'] = request.form.get('alcohol')
+        session['sunlight'] = request.form.get('sunlight')
+        session['hpv'] = request.form.get('hpv')
+        session['family_history'] = request.form.get('family_history')
+        session['quid_nut'] = request.form.get('quid_nut')
+        session['hygiene'] = request.form.get('hygiene')
+        session['immune'] = request.form.get('immune')
+        session['age'] = request.form.get('age')
+        session['gender'] = request.form.get('gender')
+        return redirect(url_for('symptom'))
     return render_template('riskfactor.php')
+
+@app.route('/symptom', methods=['GET', 'POST'])
+def symptom():
+    if request.method == 'POST':
+        session['ulcers'] = request.form.get('ulcers')
+        session['bleeding'] = request.form.get('bleeding')
+        session['swelling'] = request.form.get('swelling')
+        session['nodes'] = request.form.get('nodes')
+        session['patches'] = request.form.get('patches')
+        session['swallow'] = request.form.get('swallow')
+        session['pain'] = request.form.get('pain')
+        session['teeth'] = request.form.get('teeth')
+        session['numb'] = request.form.get('numb')
+        session['speak'] = request.form.get('speak')
+        return redirect(url_for('result'))
+    return render_template('symptom.php')
 
 @app.route('/result')
 def result():
@@ -50,7 +74,8 @@ OralCare Team
 Disclaimer: This is an automated email. Please do not reply to this message.
 """
     try:
-        msg = Message(subject, recipients=[recipient_email], body=body)
+        sender_email = ("OralCare Team", "sofiabtrsyia@gmail.com")
+        msg = Message(subject, recipients=[recipient_email], body=body, sender=sender_email)
         mail.send(msg)
         return redirect(url_for('result', email_sent='success'))
     except Exception as e:
