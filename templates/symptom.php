@@ -329,6 +329,9 @@
             </div>            
 
             <div class="action">
+                <a href="/riskfactor">
+                    <button type="button">Back</button>
+                </a>
                 <a href="/result">
                     <button type="submit">Submit</button>
                 </a>
@@ -337,17 +340,19 @@
     </div>
 
     <script>
-        // Function to update progress bar
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.progress-fill').style.width = '33.33%';
+        });
+
         function updateProgressBar() {
             const radioButtons = document.querySelectorAll('input[type="radio"]');
             const checkedCount = document.querySelectorAll('input[type="radio"]:checked').length;
-            const progressPercentage = (checkedCount / 10) * 34 + 33; 
+            const progressPercentage = (checkedCount / 10) * 33.33 + 33.33; 
             
             const progressFill = document.querySelector('.progress-fill');
-            progressFill.style.width = Math.min(progressPercentage, 100) + '%';
+            progressFill.style.width = progressPercentage + '%';
         }
 
-        // Add event listeners to all radio buttons
         document.querySelectorAll('input[type="radio"]').forEach(radio => {
             radio.addEventListener('change', updateProgressBar);
         });

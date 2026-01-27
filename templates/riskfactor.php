@@ -229,6 +229,9 @@
             </div>
 
             <div class="action">
+                <a href="/">
+                    <button type="button">Back</button>
+                </a>
                 <a href="/symptom">
                     <button type="submit">Next</button>
                 </a>
@@ -237,17 +240,15 @@
     </div>
 
     <script>
-        // Function to update progress bar
         function updateProgressBar() {
             const radioButtons = document.querySelectorAll('input[type="radio"]');
             const checkedCount = document.querySelectorAll('input[type="radio"]:checked').length;
-            const progressPercentage = (checkedCount / 10) * 34 + 0; 
+            const progressPercentage = (checkedCount / 10) * 33.33; 
             
             const progressFill = document.querySelector('.progress-fill');
-            progressFill.style.width = Math.min(progressPercentage, 34) + '%';
+            progressFill.style.width = progressPercentage + '%';
         }
 
-        // Add event listeners to all radio buttons
         document.querySelectorAll('input[type="radio"]').forEach(radio => {
             radio.addEventListener('change', updateProgressBar);
         });
