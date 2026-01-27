@@ -23,7 +23,7 @@ def calculate_risks(answers):
     # Define CF values for each symptoms
     env.build("""
     (deftemplate risks-cf-values
-        (slot cf_tobacco (default 0.89))
+        (slot cf_tobacco (default 0.9))
         (slot cf_alcohol (default 0.85))
         (slot cf_excessive_sun_exposure (default 0.45))
         (slot cf_betel_quid (default 0.7))
