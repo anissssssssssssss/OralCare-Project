@@ -26,7 +26,7 @@
             </div>
 
             <div class="action">
-                <a href="/risk factor">
+                <a href="/riskfactor">
                     <button class="start-btn">Start Assessment</button>
                 </a>
             </div>
