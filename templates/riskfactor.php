@@ -237,5 +237,22 @@
             </div>
         </form>
     </div>
+
+    <script>
+        // Function to update progress bar
+        function updateProgressBar() {
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            const checkedCount = document.querySelectorAll('input[type="radio"]:checked').length;
+            const progressPercentage = (checkedCount / 6) * 34 + 0; // 6 questions, 0-34% for Step 1
+            
+            const progressFill = document.querySelector('.progress-fill');
+            progressFill.style.width = Math.min(progressPercentage, 34) + '%';
+        }
+
+        // Add event listeners to all radio buttons
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', updateProgressBar);
+        });
+    </script>
 </body>
 </html>

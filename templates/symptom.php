@@ -10,6 +10,25 @@
 
 <body>
     <div class="container">
+        <div class="assessment-header">
+            <h1>Symptomps Assessment</h1>
+
+            <p class="assessment-desc">
+                Please answer the following questions honestly. Your responses will be used to
+                evaluate lifestyle and background factors that may increase the risk of
+                developing oral cancer.
+                <br>
+                <strong>Your answers will remain confidential and are only used for assessment purposes.</strong>
+            </p>
+
+            <div class="progress-wrapper">
+                <div class="progress-text">Step 2 of 3</div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+
         <form action="/symptom" method="post">
             <div class="question">
                 <div class="question-title">How often do you have mouth ulcers that do not heal after two weeks?</div>
@@ -318,5 +337,22 @@
             </div>
         </form>
     </div>
+
+    <script>
+        // Function to update progress bar
+        function updateProgressBar() {
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            const checkedCount = document.querySelectorAll('input[type="radio"]:checked').length;
+            const progressPercentage = (checkedCount / 8) * 100 + 33; // 8 questions total, starting at 33%
+            
+            const progressFill = document.querySelector('.progress-fill');
+            progressFill.style.width = Math.min(progressPercentage, 100) + '%';
+        }
+
+        // Add event listeners to all radio buttons
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', updateProgressBar);
+        });
+    </script>
 </body>
 </html>
