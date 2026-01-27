@@ -15,7 +15,7 @@ def calculate_risks(answers):
         (slot hpv_exposure)
         (slot immune_compromise)
         (slot family_history)
-        (slot aage_over_45)
+        (slot age_over_45)
         (slot gender_male)
     )
     """)
