@@ -129,7 +129,7 @@ def calculate_risks(answers):
         ?cf <- (risks-cf-values (cf_poor_oral_hygiene ?cf_poor_oral_hygiene))
         (not (fired-risks-rules (oral-cancer-risks "poor_oral_hygiene")))
         =>
-        (bind ?cf-value (* (-1 (float ?answer)) ?cf_poor_oral_hygiene))
+        (bind ?cf-value (* (float ?answer) ?cf_poor_oral_hygiene))
         (modify ?cf (cf_poor_oral_hygiene ?cf-value))
         (assert (fired-risks-rules (oral-cancer-risks "poor_oral_hygiene")))
     )
@@ -231,7 +231,7 @@ def calculate_risks(answers):
     """)
 
 # Assert the user's answers
-    env.assert_string(f'(oral-symptoms '
+    env.assert_string(f'(oral-cancer-risks '
                       f'(tobacco {float(answers.get("tobacco", 0))}) '
                       f'(alcohol {float(answers.get("alcohol", 0))}) '
                       f'(excessive_sun_exposure {float(answers.get("excessive_sun_exposure", 0))}) '
@@ -247,9 +247,9 @@ def calculate_risks(answers):
 
     # Extract and return the results
     for fact in env.facts():
-        if fact.template.name == 'cancer-risk-level':
-            risk_level = fact['level']
-            certainty_score = f"{(fact['cf-combine'] * 100):.2f}%"
-            return risk_level, certainty_score
-    
+        if fact.template.name == 'cancer-risk-factor-level':
+            cancer_riskfactor_level = fact['level']
+            risk_certainty_score = f"{(fact['cf-combine'] * 100):.2f}%"
+            return cancer_riskfactor_level, risk_certainty_score
+
     return "No assessment possible", "0%"

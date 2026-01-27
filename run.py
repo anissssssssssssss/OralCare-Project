@@ -32,25 +32,31 @@ def symptom():
 def riskfactor():
     if request.method == 'POST':
         answers = {
-            'tobacco': request.form.get('tobacco', 0),
-            'alcohol': request.form.get('alcohol', 0),
-            'excessive_sun_exposure': request.form.get('excessive_sun_exposure', 0),
-            'betel_quid': request.form.get('betel_quid', 0),
-            'poor_oral_hygiene': request.form.get('poor_oral_hygiene', 0),
-            'hpv_exposure': request.form.get('hpv_exposure', 0),
-            'immune_compromise': request.form.get('immune_compromise', 0),
-            'family_history': request.form.get('family_history', 0),
-            'age_over_45': request.form.get('age_over_45', 0),
-            'gender_male': request.form.get('gender_male', 0)
+            'tobacco': request.form.get('tobacco'),
+            'alcohol': request.form.get('alcohol'),
+            'excessive_sun_exposure': request.form.get('excessive_sun_exposure'),
+            'betel_quid': request.form.get('betel_quid'),
+            'poor_oral_hygiene': request.form.get('poor_oral_hygiene'),
+            'hpv_exposure': request.form.get('hpv_exposure'),
+            'immune_compromise': request.form.get('immune_compromise'),
+            'family_history': request.form.get('family_history'),
+            'age_over_45': request.form.get('age_over_45'),
+            'gender_male': request.form.get('gender_male')
         }
-
-        session['risk_level'] = risk_level
-        risk_level = risk.calculate_risks(answers)
+        session['answers'] = answers
+        return redirect(url_for('result'))
     return render_template('riskfactor.php')
 
 @app.route('/result')
 def result():
-    return render_template('result.php')
+    answers = session.get('answers')
+    if not answers:
+        return redirect(url_for('riskfactor'))
+    
+    cancer_riskfactor_level, risk_certainty_score = risk.calculate_risks(answers)
+    session['risks_level'] = cancer_riskfactor_level
+    session['certainty_score'] = risk_certainty_score
+    return render_template('result.php', risks_level=cancer_riskfactor_level, certainty_score=risk_certainty_score)
 
 @app.route('/send_email', methods=['POST'])
 def send_email():

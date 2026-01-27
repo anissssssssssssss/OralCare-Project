@@ -18,7 +18,7 @@
         <div class="results">
             <div class="result-item">
                 <strong>Risk Factor(s):</strong>
-                <p>{{ result_value_1 }}</p>
+                <p>{{ risks_level }}</p>
             </div>
             <div class="result-item">
                 <strong>Symptom(s):</strong>
