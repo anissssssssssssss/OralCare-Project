@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Candara', sans-serif;
     background-color: #fdbae1;
     display: flex;
     justify-content: center;
@@ -112,6 +112,7 @@ button#send {
     cursor: pointer;
     width: 20%;
     transition: background-color 0.3s ease;
+    font-family: 'Candara', sans-serif;
 }
 
 button:hover {
@@ -129,6 +130,7 @@ a.retake-link {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-family: 'Candara', sans-serif;
 }
 
 a.retake-link:hover {

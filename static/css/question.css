@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Candara', sans-serif;
     background: linear-gradient(135deg, #ffd9f0 0%, #ffc4e8 100%);
     color: #333;
     display: flex;
@@ -172,6 +172,7 @@ button[type="submit"]:hover {
     margin-top: 20px;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px #702347;
+    font-family: 'Candara', sans-serif;
 }
 
 .action button:hover {
