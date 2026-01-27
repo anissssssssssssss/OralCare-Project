@@ -28,8 +28,23 @@ def home():
 def symptom():
     return render_template('symptom.php')
 
-@app.route('/riskfactor')
+@app.route('/riskfactor', methods=['GET', 'POST'])
 def riskfactor():
+    if request.method == 'POST':
+        answers = {
+            'tobacco': request.form.get('tobacco'),
+            'alcohol': request.form.get('alcohol'),
+            'excessive_sun_exposure': request.form.get('excessive_sun_exposure'),
+            'betel_quid': request.form.get('betel_quid'),
+            'poor_oral_hygiene': request.form.get('poor_oral_hygiene'),
+            'hpv_exposure': request.form.get('hpv_exposure'),
+            'immune_compromise': request.form.get('immune_compromise'),
+            'family_history': request.form.get('family_history'),
+            'age_over_45': request.form.get('age_over_45'),
+            'gender_male': request.form.get('gender_male')
+        }
+        session['answers'] = answers
+        return redirect(url_for('result'))
     return render_template('riskfactor.php')
 
 @app.route('/symptom', methods=['GET', 'POST'])

@@ -10,6 +10,25 @@
 
 <body>
     <div class="container">
+        <div class="assessment-header">
+            <h1>Risk Factors Assessment</h1>
+
+            <p class="assessment-desc">
+                Please answer the following questions honestly. Your responses will be used to
+                evaluate lifestyle and background factors that may increase the risk of
+                developing oral cancer.
+                <br>
+                <strong>Your answers will remain confidential and are only used for assessment purposes.</strong>
+            </p>
+
+            <div class="progress-wrapper">
+                <div class="progress-text">Step 1 of 3</div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+
         <form action="/riskfactor" method="post">
             <div class="question">
                 <div class="question-title">How often do you smoke or chew tobacco?</div>
@@ -102,7 +121,7 @@
             </div>
 
             <div class="question">
-                <div class="question-title">Have you been diagnosed with or informed by healthcare provider that you were exposed to HPV?</div>
+                <div class="question-title">Have you ever been diagnosed with Human Papillomavirus (HPV) by a healthcare professional?</div>
                 <div class="options">
                     <label>
                         <input type="radio" name="hpv_exposure" value="0.0" required>
@@ -130,7 +149,7 @@
             </div>
 
             <div class="question">
-                <div class="question-title">Do you chew betel quid or areca nut?</div>
+                <div class="question-title">Do you currently or previously chew betel quid (areca nut)?</div>
                 <div class="options">
                     <label>
                         <input type="radio" name="betel_quid" value="0.0" required>
