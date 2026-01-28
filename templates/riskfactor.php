@@ -173,14 +173,18 @@
                     </label>
                     <label>
                         <input type="radio" name="poor_oral_hygiene" value="0.4" required>
-                        <span>Frequently</span>
+                        <span>Regularly</span>
                     </label>
                     <label>
                         <input type="radio" name="poor_oral_hygiene" value="0.6" required>
-                        <span>Very Frequently</span>
+                        <span>Frequently</span>
                     </label>
                     <label>
                         <input type="radio" name="poor_oral_hygiene" value="0.8" required>
+                        <span>Very Frequently</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="poor_oral_hygiene" value="1.0" required>
                         <span>Always</span>
                     </label>
                 </div>
